@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    width: 95%;
+}
+
+.controls {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.game-area {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#puzzleContainer {
+    position: relative;
+    max-width: 800px;
+    width: 100%;
+    border: 2px solid #ccc;
+    background-color: #f8f8f8;
+    margin: 0 auto;
+}
+
+#previewContainer {
+    max-width: 300px;
+    width: 100%;
+    border: 2px solid #ccc;
+    overflow: hidden;
+}
+
+#previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.puzzle-piece {
+    position: absolute;
+    cursor: move;
+    transition: transform 0.1s;
+    z-index: 10;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform-origin: center;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.puzzle-piece.correct {
+    z-index: 1;
+    cursor: default;
+    filter: none;
+}
+
+.puzzle-piece.dragging {
+    z-index: 20;
+    cursor: grabbing;
+}
+
+button, select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+select {
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+input[type="file"] {
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    #puzzleContainer {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+    }
+
+    #previewContainer {
+        width: 200px;
+        height: 200px;
+    }
+}

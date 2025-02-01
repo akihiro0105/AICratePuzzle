@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ジグソーパズル</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <input type="file" id="imageInput" accept="image/*">
+            <button id="startButton" disabled>パズルを開始</button>
+            <select id="difficultySelect">
+                <option value="3">3x3 (簡単)</option>
+                <option value="10">10x10 (普通)</option>
+                <option value="20">20x20 (難しい)</option>
+            </select>
+        </div>
+        <div class="game-area">
+            <div id="puzzleContainer"></div>
+            <div id="previewContainer">
+                <img id="previewImage" alt="プレビュー">
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
