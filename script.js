@@ -143,18 +143,36 @@ class JigsawPuzzle {
         }
     }
 
+    movePieceToPosition(clientX, clientY) {
+        if (!this.draggedPiece) return;
+
+        const rect = this.puzzleContainer.getBoundingClientRect();
+        const x = clientX - rect.left - this.draggedPiece.offsetWidth / 2;
+        const y = clientY - rect.top - this.draggedPiece.offsetHeight / 2;
+
+        // コンテナ内に収まるように位置を制限
+        const maxX = this.puzzleContainer.offsetWidth - this.draggedPiece.offsetWidth;
+        const maxY = this.puzzleContainer.offsetHeight - this.draggedPiece.offsetHeight;
+        
+        this.draggedPiece.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
+        this.draggedPiece.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+    }
+
     setupDragAndDrop(piece) {
+        // マウスドラッグ用の設定
         piece.draggable = true;
 
         piece.addEventListener('dragstart', (e) => {
             this.draggedPiece = piece;
             piece.style.opacity = '0.5';
+            piece.classList.add('dragging');
             e.dataTransfer.setData('text/plain', ''); // Firefox用
         });
 
         piece.addEventListener('dragend', () => {
             if (this.draggedPiece) {
                 this.draggedPiece.style.opacity = '1';
+                this.draggedPiece.classList.remove('dragging');
                 this.checkPosition(this.draggedPiece);
                 this.draggedPiece = null;
             }
@@ -167,18 +185,54 @@ class JigsawPuzzle {
         this.puzzleContainer.addEventListener('drop', (e) => {
             e.preventDefault();
             if (this.draggedPiece) {
-                const rect = this.puzzleContainer.getBoundingClientRect();
-                const x = e.clientX - rect.left - this.draggedPiece.offsetWidth / 2;
-                const y = e.clientY - rect.top - this.draggedPiece.offsetHeight / 2;
-
-                // コンテナ内に収まるように位置を制限
-                const maxX = this.puzzleContainer.offsetWidth - this.draggedPiece.offsetWidth;
-                const maxY = this.puzzleContainer.offsetHeight - this.draggedPiece.offsetHeight;
-                
-                this.draggedPiece.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
-                this.draggedPiece.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+                this.movePieceToPosition(e.clientX, e.clientY);
             }
         });
+
+        // タッチ操作用の設定
+        let startX, startY, initialX, initialY;
+
+        piece.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // スクロールを防止
+            this.draggedPiece = piece;
+            piece.style.opacity = '0.5';
+            piece.classList.add('dragging');
+
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+            initialX = piece.offsetLeft;
+            initialY = piece.offsetTop;
+        }, { passive: false });
+
+        piece.addEventListener('touchmove', (e) => {
+            if (this.draggedPiece) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const deltaX = touch.clientX - startX;
+                const deltaY = touch.clientY - startY;
+
+                const newX = initialX + deltaX;
+                const newY = initialY + deltaY;
+
+                // コンテナ内に収まるように位置を制限
+                const maxX = this.puzzleContainer.offsetWidth - piece.offsetWidth;
+                const maxY = this.puzzleContainer.offsetHeight - piece.offsetHeight;
+
+                this.draggedPiece.style.left = Math.max(0, Math.min(newX, maxX)) + 'px';
+                this.draggedPiece.style.top = Math.max(0, Math.min(newY, maxY)) + 'px';
+            }
+        }, { passive: false });
+
+        piece.addEventListener('touchend', (e) => {
+            if (this.draggedPiece) {
+                e.preventDefault();
+                this.draggedPiece.style.opacity = '1';
+                this.draggedPiece.classList.remove('dragging');
+                this.checkPosition(this.draggedPiece);
+                this.draggedPiece = null;
+            }
+        }, { passive: false });
     }
 
     checkPosition(piece) {
